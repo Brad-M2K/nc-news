@@ -1,5 +1,6 @@
 const {
-  convertTimestampToDate
+  convertTimestampToDate,
+  getArticleIdByTitle,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -38,3 +39,31 @@ describe("convertTimestampToDate", () => {
   });
 });
 
+describe("getArticleIdByTitle", () => {
+  test("returns the correct article_id when given an article title", () => {
+    const articles = [
+      { article_id: 1, title: "Article One" },
+      { article_id: 2, title: "Article Two" },
+      { article_id: 3, title: "Article Three" },
+    ];
+    const result = getArticleIdByTitle("Article Two", articles);
+    expect(result).toBe(2);
+  });
+
+  test("returns undefined when the title is not found", () => {
+    const articles = [
+      { article_id: 1, title: "Article One" },
+      { article_id: 2, title: "Article Two" },
+    ];
+    const result = getArticleIdByTitle("Nonexistent Title", articles);
+    expect(result).toBeUndefined();
+  });
+
+  test("is case-sensitive and returns undefined for mismatched case", () => {
+    const articles = [
+      { article_id: 1, title: "Case Sensitive" },
+    ];
+    const result = getArticleIdByTitle("case sensitive", articles);
+    expect(result).toBeUndefined();
+  });
+});

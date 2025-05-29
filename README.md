@@ -1,3 +1,8 @@
-# NC News Seeding
+## Environment Setup
 
-- Instructions for this sprint can be found at https://l2c.northcoders.com/courses/be/seeding-nc-news
+To run this project locally, create the following files in the root directory:
+
+- `.env.test` with: `PGDATABASE=nc_news_test`
+- `.env.development` with: `PGDATABASE=nc_news`
+
+Make sure your `.gitignore` includes `.env.*`
