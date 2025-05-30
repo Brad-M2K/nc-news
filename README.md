@@ -13,6 +13,10 @@ To run this project locally, create the following files in the **root** director
 
 ✅ **Make sure your `.gitignore` includes `.env.*`**
 
+## Entity Relationship Diagram
+
+![ERD](./docs/erd-diagram.png)
+
 ---
 
 ## 💡 Developer Tips
