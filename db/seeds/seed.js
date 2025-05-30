@@ -1,11 +1,11 @@
 const db = require("../connection");
 const format = require("pg-format");
-const { convertTimestampToDate, getArticleIdByTitle, } = require("./utils");
+const { convertTimestampToDate, getArticleIdByTitle } = require("./utils");
 
-// ! DROP tables if they exist — ensures a clean slate
 const seed = async ({ topicData, userData, articleData, commentData }) => {
+  // ! DROP tables if they exist — ensures a clean slate
   await db.query("DROP TABLE IF EXISTS comments, articles, users, topics;");
-  // * CREATE all necessary tables for seeding
+  // * CREATE ALL NECESSARY TABLES FOR SEEDING
   // * Create topics table
   await db.query(`
     CREATE TABLE topics (
@@ -86,34 +86,33 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
   `,
     articleData.map((article) => {
       const convertedTimestamp = convertTimestampToDate(article);
-      const {title, topic, author, body, created_at, votes, article_img_url} = convertedTimestamp;
-      return [
-        title,
-        topic,
-        author,
-        body,
-        created_at,
-        votes,
-        article_img_url,
-      ];
+      const { title, topic, author, body, created_at, votes, article_img_url } =
+        convertedTimestamp;
+      return [title, topic, author, body, created_at, votes, article_img_url];
     })
   );
 
   await db.query(articleInsertQuery);
 
   // * Insert comment data (after mapping titles to IDs and converting timestamps)
-  const { rows: articles } = await db.query(`SELECT article_id, title FROM articles;`);
+  //* selected articles to use in insert query
+  const articlesQueryResult = await db.query(
+    `SELECT article_id, title FROM articles;`
+  );
+  const articles = articlesQueryResult.rows;
 
-  const commentInsertQuery = format(`
+  const commentInsertQuery = format(
+    `
      INSERT INTO comments (article_id, body, votes, author, created_at)
      VALUES %L;
-  `, 
-    commentData.map((comment) =>{
+  `,
+    commentData.map((comment) => {
       const article_id = getArticleIdByTitle(comment.article_title, articles);
       const withConvertedTimestamp = convertTimestampToDate(comment);
       const { body, votes, author, created_at } = withConvertedTimestamp;
       return [article_id, body, votes, author, created_at];
-    }));
-    await db.query(commentInsertQuery);
+    })
+  );
+  await db.query(commentInsertQuery);
 };
 module.exports = seed;
