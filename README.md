@@ -13,8 +13,9 @@ To run this project locally, create the following files in the **root** director
 
 ✅ **Make sure your `.gitignore` includes `.env.*`**
 
-## DOCS folder contains
-### ERD-Diagram of databse ./DOCS/
+## Entity Relationship Diagram
+
+![ERD](DOCS/erd-diagram.png)
 
 
 ---
