@@ -2,9 +2,17 @@ const db = require("../connection");
 const format = require("pg-format");
 const { convertTimestampToDate, getArticleIdByTitle } = require("./utils");
 
-const seed = async ({ topicData, userData, articleData, commentData }) => {
+const seed = async ({
+  topicData,
+  userData,
+  articleData,
+  commentData,
+  emojiData,
+}) => {
   // ! DROP tables if they exist — ensures a clean slate
-  await db.query("DROP TABLE IF EXISTS comments, articles, users, topics;");
+  await db.query(
+    "DROP TABLE IF EXISTS comments, articles, users, topics, emojis;"
+  );
   // * CREATE ALL NECESSARY TABLES FOR SEEDING
   // * Create topics table
   await db.query(`
@@ -46,6 +54,13 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
+  //* Create emojis table
+  await db.query(`
+   CREATE TABLE emojis (
+   emoji_id SERIAL PRIMARY KEY,
+   emoji VARCHAR NOT NULL
+   );
+`);
 
   // * INSERT data into tables
   // * Insert topic data
@@ -114,5 +129,16 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     })
   );
   await db.query(commentInsertQuery);
+
+  //* Insert emoji data
+  const emojisInsertQuery = format(
+    `
+     INSERT INTO emojis (emoji)
+     VALUES %L;
+  `,
+    emojiData.map(({ emoji }) => [emoji])
+  );
+  await db.query(emojisInsertQuery);
 };
+
 module.exports = seed;
