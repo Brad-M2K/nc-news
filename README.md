@@ -15,7 +15,7 @@ To run this project locally, create the following files in the **root** director
 
 ## Entity Relationship Diagram
 
-![ERD](DOCS/erd-diagram.png)
+![ERD](DOCS/nc-news-erd-diagram.png)
 
 
 ---
