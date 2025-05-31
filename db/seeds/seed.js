@@ -8,11 +8,12 @@ const seed = async ({
   articleData,
   commentData,
   emojiData,
+  emojiArticleUserData,
 }) => {
   // ! DROP tables if they exist — ensures a clean slate
-  await db.query(
-    "DROP TABLE IF EXISTS comments, articles, users, topics, emojis;"
-  );
+  await db.query(`
+     DROP TABLE IF EXISTS comments, articles, users, topics, emojis, emoji_article_user, user_topic, user_article_votes;
+  `);
   // * CREATE ALL NECESSARY TABLES FOR SEEDING
   // * Create topics table
   await db.query(`
@@ -61,6 +62,37 @@ const seed = async ({
    emoji VARCHAR NOT NULL
    );
 `);
+  //* Create emoji_article_user table
+  await db.query(`
+   CREATE TABLE emoji_article_user (
+   emoji_article_user_id SERIAL PRIMARY KEY,
+   emoji_id INT REFERENCES emojis(emoji_id),
+   username VARCHAR REFERENCES users(username),
+   article_id INT REFERENCES articles(article_id),
+   UNIQUE (emoji_id, username, article_id)
+   );
+  `);
+
+  //* Create user topic table
+  await db.query(`
+    CREATE TABLE user_topic (
+    user_topic_id SERIAL PRIMARY KEY,
+    username VARCHAR REFERENCES users(username),
+    topic VARCHAR REFERENCES topics(slug),
+    UNIQUE (username, topic)
+    );
+  `);
+
+  //* Create user article votes table
+  await db.query(`
+    CREATE TABLE user_article_votes (
+    user_article_votes_id SERIAL PRIMARY KEY,
+    username VARCHAR REFERENCES users(username),
+    article_id INT REFERENCES articles(article_id),
+    vote_count INT NOT NULL,
+    UNIQUE (username, article_id)
+    );  
+  `);
 
   // * INSERT data into tables
   // * Insert topic data
@@ -139,6 +171,19 @@ const seed = async ({
     emojiData.map(({ emoji }) => [emoji])
   );
   await db.query(emojisInsertQuery);
+  //* Insert emoji user article data
+  const emojiArticleUserDataInsertQuery = format(
+    `
+     INSERT INTO emoji_article_user(emoji_id, username, article_id)
+     VALUES %L;
+  `,
+    emojiArticleUserData.map(({ emoji_id, username, article_id }) => [
+      emoji_id,
+      username,
+      article_id,
+    ])
+  );
+  await db.query(emojiArticleUserDataInsertQuery);
 };
 
 module.exports = seed;
