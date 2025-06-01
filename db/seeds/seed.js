@@ -3,17 +3,24 @@ const format = require("pg-format");
 const { convertTimestampToDate, getArticleIdByTitle } = require("./utils");
 
 const seed = async ({
-  topicData,
-  userData,
-  articleData,
-  commentData,
-  emojiData,
-  emojiArticleUserData,
+  topicsData,
+  usersData,
+  articlesData,
+  commentsData,
+  emojisData,
+  emojiArticleUsersData,
+  userTopicsData,
+  userArticleVotesData,
+  bookmarksData,
+  commentReactionsData,
+  notificationsData,
+  privateMessagesData,
 }) => {
   // ! DROP tables if they exist — ensures a clean slate
   await db.query(`
-     DROP TABLE IF EXISTS comments, articles, users, topics, emojis, emoji_article_user, user_topic, user_article_votes;
+    DROP TABLE IF EXISTS poll_votes, polls, article_views, private_messages, notifications, comment_reactions, bookmarks, user_article_votes, user_topic, emoji_article_user, emojis, comments, articles, users, topics, user_comment_votes;
   `);
+
   // * CREATE ALL NECESSARY TABLES FOR SEEDING
   // * Create topics table
   await db.query(`
@@ -57,20 +64,20 @@ const seed = async ({
   `);
   //* Create emojis table
   await db.query(`
-   CREATE TABLE emojis (
-   emoji_id SERIAL PRIMARY KEY,
-   emoji VARCHAR NOT NULL
-   );
-`);
+    CREATE TABLE emojis (
+      emoji_id SERIAL PRIMARY KEY,
+      emoji VARCHAR NOT NULL
+    );
+  `);
   //* Create emoji_article_user table
   await db.query(`
-   CREATE TABLE emoji_article_user (
-   emoji_article_user_id SERIAL PRIMARY KEY,
-   emoji_id INT REFERENCES emojis(emoji_id),
-   username VARCHAR REFERENCES users(username),
-   article_id INT REFERENCES articles(article_id),
-   UNIQUE (emoji_id, username, article_id)
-   );
+    CREATE TABLE emoji_article_user (
+      emoji_article_user_id SERIAL PRIMARY KEY,
+      emoji_id INT REFERENCES emojis(emoji_id),
+      username VARCHAR REFERENCES users(username),
+      article_id INT REFERENCES articles(article_id),
+      UNIQUE (emoji_id, username, article_id)
+    );
   `);
 
   //* Create user topic table
@@ -94,14 +101,102 @@ const seed = async ({
     );  
   `);
 
+  // * Create bookmarks table
+  await db.query(`
+CREATE TABLE bookmarks (
+  bookmark_id SERIAL PRIMARY KEY,
+  username VARCHAR REFERENCES users(username),
+  article_id INT REFERENCES articles(article_id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (username, article_id)
+);
+`);
+
+  //* Create comment_reactions table
+  await db.query(`
+    CREATE TABLE comment_reactions (
+      reaction_id SERIAL PRIMARY KEY,
+      emoji_id INT REFERENCES emojis(emoji_id),
+      username VARCHAR REFERENCES users(username),
+      comment_id INT REFERENCES comments(comment_id),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE (emoji_id, username, comment_id)
+    );
+  `);
+
+  //* Create notifications table
+  await db.query(`
+    CREATE TABLE notifications (
+      notification_id SERIAL PRIMARY KEY,
+      username VARCHAR REFERENCES users(username),
+      message TEXT NOT NULL,
+      is_read BOOLEAN DEFAULT false,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  //* Create private_messages table
+  await db.query(`
+    CREATE TABLE private_messages (
+      message_id SERIAL PRIMARY KEY,
+      sender_username VARCHAR REFERENCES users(username),
+      recipient_username VARCHAR REFERENCES users(username),
+      message TEXT NOT NULL,
+      sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  //* Create article views table
+  await db.query(`
+    CREATE TABLE article_views (
+      article_view_id SERIAL PRIMARY KEY,
+      username VARCHAR REFERENCES users(username),
+      article_id INT REFERENCES articles(article_id),
+      view_count INT DEFAULT 1,
+      last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE (username, article_id)
+    );
+  `);
+
+  //* Create polls table
+  await db.query(`
+    CREATE TABLE polls (
+      poll_id SERIAL PRIMARY KEY,
+      article_id INT REFERENCES articles(article_id),
+      question TEXT NOT NULL
+    );
+  `);
+
+  //* Create poll Votes table
+  await db.query(`
+    CREATE TABLE poll_votes (
+      poll_vote_id SERIAL PRIMARY KEY,
+      poll_id INT REFERENCES polls(poll_id),
+      username VARCHAR REFERENCES users(username),
+      choice TEXT NOT NULL,
+      UNIQUE (poll_id, username)
+    );
+  `);
+
+  //* Create user comment votes table
+  await db.query(`
+    CREATE TABLE user_comment_votes (
+      user_comment_votes_id SERIAL PRIMARY KEY,
+      username VARCHAR REFERENCES users(username),
+      comment_id INT REFERENCES comments(comment_id),
+      vote_count INT NOT NULL,
+      UNIQUE (username, comment_id)
+    );
+  `);
+
   // * INSERT data into tables
   // * Insert topic data
   const topicInsertQuery = format(
     `
-     INSERT INTO topics (slug, description, img_url)
+    INSERT INTO topics (slug, description, img_url)
     VALUES %L;
   `,
-    topicData.map(({ slug, description, img_url }) => [
+    topicsData.map(({ slug, description, img_url }) => [
       slug,
       description,
       img_url,
@@ -116,7 +211,7 @@ const seed = async ({
     INSERT INTO users (username, name, avatar_url)
     VALUES %L;
   `,
-    userData.map(({ username, name, avatar_url }) => [
+    usersData.map(({ username, name, avatar_url }) => [
       username,
       name,
       avatar_url,
@@ -128,10 +223,10 @@ const seed = async ({
   // * Insert article data (with converted timestamps)
   const articleInsertQuery = format(
     `
-     INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url)
-     VALUES %L;
+    INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url)
+    VALUES %L;
   `,
-    articleData.map((article) => {
+    articlesData.map((article) => {
       const convertedTimestamp = convertTimestampToDate(article);
       const { title, topic, author, body, created_at, votes, article_img_url } =
         convertedTimestamp;
@@ -150,10 +245,10 @@ const seed = async ({
 
   const commentInsertQuery = format(
     `
-     INSERT INTO comments (article_id, body, votes, author, created_at)
-     VALUES %L;
+    INSERT INTO comments (article_id, body, votes, author, created_at)
+    VALUES %L;
   `,
-    commentData.map((comment) => {
+    commentsData.map((comment) => {
       const article_id = getArticleIdByTitle(comment.article_title, articles);
       const withConvertedTimestamp = convertTimestampToDate(comment);
       const { body, votes, author, created_at } = withConvertedTimestamp;
@@ -165,25 +260,105 @@ const seed = async ({
   //* Insert emoji data
   const emojisInsertQuery = format(
     `
-     INSERT INTO emojis (emoji)
-     VALUES %L;
+    INSERT INTO emojis (emoji)
+    VALUES %L;
   `,
-    emojiData.map(({ emoji }) => [emoji])
+    emojisData.map(({ emoji }) => [emoji])
   );
   await db.query(emojisInsertQuery);
   //* Insert emoji user article data
   const emojiArticleUserDataInsertQuery = format(
     `
-     INSERT INTO emoji_article_user(emoji_id, username, article_id)
-     VALUES %L;
+    INSERT INTO emoji_article_user(emoji_id, username, article_id)
+    VALUES %L;
   `,
-    emojiArticleUserData.map(({ emoji_id, username, article_id }) => [
+    emojiArticleUsersData.map(({ emoji_id, username, article_id }) => [
       emoji_id,
       username,
       article_id,
     ])
   );
   await db.query(emojiArticleUserDataInsertQuery);
+
+  //* Insert user topic Data
+  const userTopicDataInsertQuery = format(
+    `
+    INSERT INTO user_topic (username, topic)
+    VALUES %L;
+  `,
+    userTopicsData.map(({ username, topic }) => [username, topic])
+  );
+  await db.query(userTopicDataInsertQuery);
+
+  //* Insert user article votes data
+  const userArticleVotesDataInsertQuery = format(
+    `
+    INSERT INTO user_article_votes (username, article_id, vote_count)
+    VALUES %L;
+  `,
+    userArticleVotesData.map(({ username, article_id, vote_count }) => [
+      username,
+      article_id,
+      vote_count,
+    ])
+  );
+  await db.query(userArticleVotesDataInsertQuery);
+
+  //* Insert bookmark data
+  const bookmarksInsertQuery = format(
+    `
+    INSERT INTO bookmarks (username, article_id)
+    VALUES %L;
+    `,
+    bookmarksData.map(({ username, article_id }) => [username, article_id])
+  );
+  await db.query(bookmarksInsertQuery);
+
+  //* Insert comment reactions data
+  const commentReactionsInsertQuery = format(
+    `
+    INSERT INTO comment_reactions (emoji_id, username, comment_id)
+    VALUES %L;
+    `,
+    commentReactionsData.map(({ emoji_id, username, comment_id }) => [
+      emoji_id,
+      username,
+      comment_id,
+    ])
+  );
+  await db.query(commentReactionsInsertQuery);
+
+  //* Insert notification data
+  const notificationInsertQuery = format(
+    `
+    INSERT INTO notifications (username, message, is_read)
+    VALUES %L;
+  `,
+    notificationsData.map(({ username, message, is_read }) => [
+      username,
+      message,
+      is_read,
+    ])
+  );
+  await db.query(notificationInsertQuery);
+
+  //* Insert private messages data
+  const privateMessagesInsertQuery = format(
+    `
+    INSERT INTO private_messages (sender_username, recipient_username, message)
+    VALUES %L;
+  `,
+    privateMessagesData.map(
+      ({ sender_username, recipient_username, message }) => [
+        sender_username,
+        recipient_username,
+        message,
+      ]
+    )
+  );
+  await db.query(privateMessagesInsertQuery);
+
+  console.log("Database seeded successfully! 📊 ➫ 🌐");
 };
 
 module.exports = seed;
