@@ -15,6 +15,10 @@ const seed = async ({
   commentReactionsData,
   notificationsData,
   privateMessagesData,
+  articleViewsData,
+  pollsData,
+  pollVotesData,
+  userCommentVotesData,
 }) => {
   // ! DROP tables if they exist — ensures a clean slate
   await db.query(`
@@ -357,6 +361,61 @@ CREATE TABLE bookmarks (
     )
   );
   await db.query(privateMessagesInsertQuery);
+
+  //* Insert article views data
+  const articleViewsInsertQuery = format(
+    `
+    INSERT INTO article_views (username, article_id, view_count, last_viewed)
+    VALUES %L;
+  `,
+    articleViewsData.map(
+      ({ username, article_id, view_count, last_viewed }) => [
+        username,
+        article_id,
+        view_count,
+        last_viewed,
+      ]
+    )
+  );
+  await db.query(articleViewsInsertQuery);
+
+  //* Insert polls data
+  const pollsInsertQuery = format(
+    `
+    INSERT INTO polls (article_id, question)
+    VALUES %L;
+  `,
+    pollsData.map(({ article_id, question }) => [article_id, question])
+  );
+  await db.query(pollsInsertQuery);
+
+  //* Insert poll votes data
+  const pollVotesInsertQuery = format(
+    `
+    INSERT INTO poll_votes (poll_id, username, choice)
+    VALUES %L;
+  `,
+    pollVotesData.map(({ poll_id, username, choice }) => [
+      poll_id,
+      username,
+      choice,
+    ])
+  );
+  await db.query(pollVotesInsertQuery);
+
+  //* Insert user comment votes data
+  const userCommentVotesInsertQuery = format(
+    `
+    INSERT INTO user_comment_votes (username, comment_id, vote_count)
+    VALUES %L;
+  `,
+    userCommentVotesData.map(({ username, comment_id, vote_count }) => [
+      username,
+      comment_id,
+      vote_count,
+    ])
+  );
+  await db.query(userCommentVotesInsertQuery);
 
   console.log("Database seeded successfully! 📊 ➫ 🌐");
 };
