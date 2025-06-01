@@ -19,10 +19,11 @@ const seed = async ({
   pollsData,
   pollVotesData,
   userCommentVotesData,
+  pollOptionsData,
 }) => {
   // ! DROP tables if they exist — ensures a clean slate
   await db.query(`
-    DROP TABLE IF EXISTS poll_votes, polls, article_views, private_messages, notifications, comment_reactions, bookmarks, user_article_votes, user_topic, emoji_article_user, emojis, comments, articles, users, topics, user_comment_votes;
+    DROP TABLE IF EXISTS poll_votes, poll_options, polls, article_views, private_messages, notifications, comment_reactions, bookmarks, user_article_votes, user_topic, emoji_article_user, emojis, comments, articles, users, topics, user_comment_votes;
   `);
 
   // * CREATE ALL NECESSARY TABLES FOR SEEDING
@@ -168,6 +169,16 @@ CREATE TABLE bookmarks (
       poll_id SERIAL PRIMARY KEY,
       article_id INT REFERENCES articles(article_id),
       question TEXT NOT NULL
+    );
+  `);
+
+  //* Create poll_options table
+  await db.query(`
+    CREATE TABLE poll_options (
+      option_id SERIAL PRIMARY KEY,
+      poll_id INT REFERENCES polls(poll_id) ON DELETE CASCADE,
+      option_text TEXT NOT NULL,
+      created_by VARCHAR REFERENCES users(username) NOT NULL
     );
   `);
 
@@ -388,6 +399,20 @@ CREATE TABLE bookmarks (
     pollsData.map(({ article_id, question }) => [article_id, question])
   );
   await db.query(pollsInsertQuery);
+
+  //* Insert poll options data
+  const pollOptionsInsertQuery = format(
+    `
+    INSERT INTO poll_options (poll_id, option_text, created_by)
+    VALUES %L;
+  `,
+    pollOptionsData.map(({ poll_id, option_text, created_by }) => [
+      poll_id,
+      option_text,
+      created_by,
+    ])
+  );
+  await db.query(pollOptionsInsertQuery);
 
   //* Insert poll votes data
   const pollVotesInsertQuery = format(

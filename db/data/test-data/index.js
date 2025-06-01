@@ -13,5 +13,5 @@ exports.privateMessagesData = require("./private-messages.js");
 exports.articleViewsData = require("./article-views.js");
 exports.pollVotesData = require("./poll-votes.js");
 exports.pollsData = require("./polls.js");
-// exports.pollOptionsData = require("./poll-options.js");
+exports.pollOptionsData = require("./poll-options.js");
 exports.userCommentVotesData = require("./user-comment-votes.js");
