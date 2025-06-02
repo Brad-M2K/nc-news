@@ -17,12 +17,8 @@ To run this project locally, create the following files in the **root** director
 [LINK](https://dbdiagram.io/d/NC-News-683992adbd74709cb74712d4) to live diagram for better view 
 
 <a href="https://dbdiagram.io/d/your-link">
-  <img src="./DOCS/nc-news-erd-diagram.png" alt="ERD" width="600"/>
+  <img src="./DOCS/nc-news-erd-diagram.png" alt="ERD" width="600" height="auto"/>
 </a>
-
-![ERD](DOCS/nc-news-erd-diagram.png)
-
-
 ---
 
 ## 💡 Developer Tips
