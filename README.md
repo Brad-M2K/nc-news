@@ -13,7 +13,7 @@ To run this project locally, create the following files in the **root** director
 
 ✅ **Make sure your `.gitignore` includes `.env.*`**
 
-## Entity Relationship Diagram
+## Entity Relationship Diagram - Database
 [LINK](https://dbdiagram.io/d/NC-News-683992adbd74709cb74712d4) to live diagram for better view 
 
 ![ERD](DOCS/nc-news-erd-diagram.png)
