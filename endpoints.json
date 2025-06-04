@@ -37,5 +37,19 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article by its ID",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 0,
+        "article_img_url": "https://www.healthyfood.com/wp-content/uploads/2018/05/seafood-substitutions-are-increasing.jpg"
+      }
+    }
   }
 }
