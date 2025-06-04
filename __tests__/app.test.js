@@ -70,23 +70,23 @@ describe("GET /api/articles", () => {
   });
 });
 
-// describe("GET /api/users", () => {
-//   test("200: Responds with an object with a key of users with a value of an array of user objects, each including the keys: username, avatar_url, and name", () => {
-//     return request(app)
-//       .get("/api/users")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { users } = body;
+describe("GET /api/users", () => {
+  test("200: Responds with an object with a key of users with a value of an array of user objects, each including the keys: username, avatar_url, and name", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
 
-//         expect(body).toHaveProperty("users");
-//         expect(users).toBeInstanceOf(Array);
-//         expect(users).toHaveLength(4);
+        expect(body).toHaveProperty("users");
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
 
-//         users.forEach((user) => {
-//           expect(user).toHaveProperty("username");
-//           expect(user).toHaveProperty("avatar_url");
-//           expect(user).toHaveProperty("name");
-//         });
-//       });
-//   });
-// });
+        users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("avatar_url");
+          expect(user).toHaveProperty("name");
+        });
+      });
+  });
+});

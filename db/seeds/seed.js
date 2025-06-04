@@ -441,8 +441,6 @@ CREATE TABLE bookmarks (
     ])
   );
   await db.query(userCommentVotesInsertQuery);
-
-  console.log("Database seeded successfully! 📊 ➫ 🌐");
 };
 
 module.exports = seed;
