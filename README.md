@@ -14,7 +14,7 @@ To run this project locally, create the following files in the **root** director
 ✅ **Make sure your `.gitignore` includes `.env.*`**
 
 ## Entity Relationship Diagram - Database
-[LINK](https://dbdiagram.io/d/NC-News-683992adbd74709cb74712d4) to live diagram for better view  
+[Link to dbdiagram.io](https://dbdiagram.io/d/NC-News-683992adbd74709cb74712d4): for better view of relations 
 
 <img src="DOCS/nc-news-erd-diagram.png" alt="NC News ERD Diagram" width="500" height="auto" />
 
