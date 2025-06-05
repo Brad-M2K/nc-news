@@ -4,6 +4,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed");
+require("jest-sorted");
 
 beforeEach(() => {
   return seed(testData);
@@ -85,6 +86,56 @@ describe("Articles Endpoints", () => {
     test("400: Responds with an error message when given an invalid article_id", async () => {
       const { body } = await request(app)
         .get("/api/articles/invalid-id")
+        .expect(400);
+      expect(body.msg).toBe("Bad Request");
+    });
+  });
+});
+
+describe("Comments Endpoints", () => {
+  describe("GET - /api/articles/:article_id/comments", () => {
+    test("200: Responds with an array of comment objects for the specified article_id, each including the keys: comment_id, votes, created_at, author, body", async () => {
+      const { body } = await request(app)
+        .get("/api/articles/1/comments")
+        .expect(200);
+      const { comments } = body;
+
+      expect(body).toHaveProperty("comments");
+      expect(comments).toBeInstanceOf(Array);
+      expect(comments).toHaveLength(11);
+      expect(comments).toBeSortedBy("created_at", { descending: true });
+
+      comments.forEach((comment) => {
+        expect(comment).toHaveProperty("comment_id");
+        expect(comment).toHaveProperty("votes");
+        expect(comment).toHaveProperty("created_at");
+        expect(comment).toHaveProperty("author");
+        expect(comment).toHaveProperty("body");
+        expect(comment).toHaveProperty("article_id");
+        expect(comment.article_id).toBe(1);
+      });
+    });
+
+    test("200: Responds with an empty array when there are no comments for the specified article_id", async () => {
+      const { body } = await request(app)
+        .get("/api/articles/2/comments")
+        .expect(200);
+      const { comments } = body;
+      expect(body).toHaveProperty("comments");
+      expect(comments).toBeInstanceOf(Array);
+      expect(comments).toHaveLength(0);
+    });
+
+    test("404: Responds with an error message when given a valid but non-existent article_id", async () => {
+      const { body } = await request(app)
+        .get("/api/articles/9999/comments")
+        .expect(404);
+      expect(body.msg).toBe("Article not found");
+    });
+
+    test("400: Responds with an error message when given an invalid article_id", async () => {
+      const { body } = await request(app)
+        .get("/api/articles/invalid-id/comments")
         .expect(400);
       expect(body.msg).toBe("Bad Request");
     });

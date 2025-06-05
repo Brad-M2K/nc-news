@@ -5,6 +5,7 @@ const {
   getArticles,
   getUsers,
   getArticleById,
+  getCommentsByArticleId,
 } = require("./controllers");
 const { psqlErrors, customErrors, serverErrors } = require("./error-handling");
 
@@ -22,6 +23,10 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 // gets a specific article by id including comment count and body
 app.get("/api/articles/:article_id", getArticleById);
+
+//* Comments Endpoints
+// gets all comments for an artcile by id
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 //*User Endpoints
 // gets list of all users

@@ -1,16 +1,16 @@
-//!  400
+//!  PSQL || 400
 exports.psqlErrors = (err, req, res, next) => {
   if (err.code === "22P02") return res.status(400).send({ msg: "Bad Request" });
   else next(err);
 };
 
-//! 404
+//! Custom || 404
 exports.customErrors = (err, req, res, next) => {
   if (err.status) return res.status(err.status).send({ msg: err.msg });
   else next(err);
 };
 
-//! Server crash
+//! Server crash || 500
 exports.serverErrors = (err, req, res, next) => {
   console.error(err); // Optional: for debugging unknown errors
   res.status(500).send({ msg: "Internal Server Error" });

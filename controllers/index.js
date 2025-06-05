@@ -1,13 +1,9 @@
-const { getApi } = require("./api.controller");
-const { getTopics } = require("./topics.controller");
-const { getArticles } = require("./articles.controller");
-const { getUsers } = require("./users.controller");
-const { getArticleById } = require("./articles.controller");
-
 module.exports = {
-  getApi,
-  getTopics,
-  getArticles,
-  getUsers,
-  getArticleById,
+  getApi: require("./api.controller").getApi,
+  getTopics: require("./topics.controller").getTopics,
+  getUsers: require("./users.controller").getUsers,
+  getArticles: require("./articles.controller").getArticles,
+  getArticleById: require("./articles.controller").getArticleById,
+  getCommentsByArticleId: require("./comments.controller")
+    .getCommentsByArticleId,
 };
