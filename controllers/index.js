@@ -1,3 +1,5 @@
+const { post } = require("../app");
+
 module.exports = {
   getApi: require("./api.controller").getApi,
   getTopics: require("./topics.controller").getTopics,
@@ -6,4 +8,6 @@ module.exports = {
   getArticleById: require("./articles.controller").getArticleById,
   getCommentsByArticleId: require("./comments.controller")
     .getCommentsByArticleId,
+  postCommentsByArticleId: require("./comments.controller")
+    .postCommentsByArticleId,
 };

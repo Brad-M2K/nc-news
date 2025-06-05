@@ -3,5 +3,8 @@ module.exports = {
   selectUsers: require("./users.model").selectUsers,
   selectArticles: require("./articles.model").selectArticles,
   selectArticleById: require("./articles.model").selectArticleById,
-  selectCommentsByArticleId: require("./comments.model").selectCommentsByArticleId,
+  selectCommentsByArticleId:
+    require("./comments.model").selectCommentsByArticleId,
+  insertCommentByArticleId:
+    require("./comments.model").insertCommentByArticleId,
 };

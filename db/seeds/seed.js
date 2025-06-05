@@ -61,7 +61,7 @@ const seed = async ({
     CREATE TABLE comments (
     comment_id SERIAL PRIMARY KEY,
     article_id SERIAL REFERENCES articles(article_id),
-    body TEXT,
+    body TEXT NOT NULL,
     votes INT DEFAULT 0,
     author VARCHAR REFERENCES users(username),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

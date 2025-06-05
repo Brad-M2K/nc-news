@@ -87,7 +87,7 @@ describe("Articles Endpoints", () => {
       const { body } = await request(app)
         .get("/api/articles/invalid-id")
         .expect(400);
-      expect(body.msg).toBe("Bad Request");
+      expect(body.msg).toBe("Bad request");
     });
   });
 });
@@ -137,7 +137,78 @@ describe("Comments Endpoints", () => {
       const { body } = await request(app)
         .get("/api/articles/invalid-id/comments")
         .expect(400);
-      expect(body.msg).toBe("Bad Request");
+      expect(body.msg).toBe("Bad request");
+    });
+  });
+
+  describe("POST - /api/articles/:article_id/comments", () => {
+    test("201: Responds with the posted comment object including the keys: comment_id, author, article_id, votes, created_at, and body", async () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "This is a new comment",
+      };
+
+      const { body } = await request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201);
+      const { comment } = body;
+
+      expect(body).toHaveProperty("comment");
+      expect(comment).toHaveProperty("comment_id");
+      expect(comment).toHaveProperty("author", "butter_bridge");
+      expect(comment).toHaveProperty("article_id", 1);
+      expect(comment).toHaveProperty("votes", 0);
+      expect(comment).toHaveProperty("created_at");
+      expect(comment).toHaveProperty("body", "This is a new comment");
+    });
+
+    test("404: Responds with an error message when given a valid but non-existent article_id", async () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "This is a new comment",
+      };
+
+      const { body } = await request(app)
+        .post("/api/articles/9999/comments")
+        .send(newComment)
+        .expect(404);
+      expect(body.msg).toBe("Article not found");
+    });
+
+    test("400: Responds with an error message when given an invalid article_id", async () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "This is a new comment",
+      };
+
+      const { body } = await request(app)
+        .post("/api/articles/invalid-id/comments")
+        .send(newComment)
+        .expect(400);
+      expect(body.msg).toBe("Bad request");
+    });
+
+    test("400: Responds with an error message when required fields are missing in the request body", async () => {
+      const { body } = await request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "butter_bridge" }) // Missing 'body'
+        .expect(400);
+      expect(body.msg).toBe("Bad request");
+    });
+
+    test("404: Responds with an error message when given a valid but non-existent username", async () => {
+      const newComment = {
+        username: "non_existent_user",
+        body: "This is a comment",
+      };
+
+      const { body } = await request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(404);
+
+      expect(body.msg).toBe("User not found");
     });
   });
 });

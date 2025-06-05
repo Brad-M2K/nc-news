@@ -66,5 +66,22 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a new comment to a specific article by its ID",
+    "queries": [],
+    "body": {
+      "username": "weegembump",
+      "body": "This is a new comment"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "author": "weegembump",
+        "votes": 0,
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "body": "This is a new comment"
+      }
+    }
   }
 }
