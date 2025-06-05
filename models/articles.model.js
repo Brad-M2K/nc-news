@@ -27,5 +27,9 @@ exports.selectArticleById = async (article_id) => {
     `,
     [article_id]
   );
-  return rows[0];
+  const article = rows[0];
+  if (!article) {
+    throw { status: 404, msg: "Article not found" };
+  }
+  return article;
 };

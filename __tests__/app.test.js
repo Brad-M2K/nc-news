@@ -86,7 +86,7 @@ describe("Articles Endpoints", () => {
       const { body } = await request(app)
         .get("/api/articles/invalid-id")
         .expect(400);
-      expect(body.msg).toBe("Invalid article ID");
+      expect(body.msg).toBe("Bad Request");
     });
   });
 });

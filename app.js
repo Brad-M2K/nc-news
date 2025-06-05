@@ -6,6 +6,8 @@ const {
   getUsers,
   getArticleById,
 } = require("./controllers");
+const { psqlErrors, customErrors, serverErrors } = require("./error-handling");
+
 const app = express();
 
 //* gets the endpoints.json
@@ -25,14 +27,9 @@ app.get("/api/articles/:article_id", getArticleById);
 // gets list of all users
 app.get("/api/users", getUsers);
 
-// ✨ Custom error-handling middleware
-app.use((err, req, res, next) => {
-  if (err.status && err.msg) {
-    res.status(err.status).send({ msg: err.msg });
-  } else {
-    console.error(err); // Optional: for debugging unknown errors
-    res.status(500).send({ msg: "Internal Server Error" });
-  }
-});
+//! ✨ Error-handling middleware
+app.use(psqlErrors);
+app.use(customErrors);
+app.use(serverErrors);
 
 module.exports = app;
