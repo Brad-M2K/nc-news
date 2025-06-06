@@ -1,13 +1,27 @@
 const db = require("../db/connection");
 
-exports.selectArticles = async () => {
+exports.selectArticles = async (sort_by = "created_at", order = "desc") => {
+  const validSortColumns = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const validOrders = ["asc", "desc"];
+
+  if (!validSortColumns.includes(sort_by) || !validOrders.includes(order))
+    throw { status: 400, msg: "Bad request" };
+
   const { rows } = await db.query(
     `
       SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.comment_id)::INT AS comment_count
       FROM articles
       LEFT JOIN comments ON articles.article_id = comments.article_id
       GROUP BY articles.article_id
-      ORDER BY articles.created_at DESC;
+      ORDER BY ${sort_by} ${order};
     `
   );
   return rows;

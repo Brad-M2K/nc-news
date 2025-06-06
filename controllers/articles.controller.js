@@ -1,3 +1,4 @@
+const { sort } = require("../db/data/test-data/articles");
 const {
   selectArticles,
   selectArticleById,
@@ -6,8 +7,9 @@ const {
 const { checkArticleExists, ensurePresent } = require("../utils");
 
 exports.getArticles = async (req, res, next) => {
+  const { sort_by, order } = req.query;
   try {
-    const articles = await selectArticles();
+    const articles = await selectArticles(sort_by, order);
     res.status(200).send({ articles });
   } catch (err) {
     next(err);

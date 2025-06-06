@@ -8,4 +8,5 @@ module.exports = {
   insertCommentByArticleId:
     require("./comments.model").insertCommentByArticleId,
   updateArticleVotesById: require("./articles.model").updateArticleVotesById,
+  removeCommentById: require("./comments.model").removeCommentById,
 };

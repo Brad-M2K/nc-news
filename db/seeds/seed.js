@@ -80,7 +80,7 @@ const seed = async ({
       emoji_article_user_id SERIAL PRIMARY KEY,
       emoji_id INT REFERENCES emojis(emoji_id),
       username VARCHAR REFERENCES users(username),
-      article_id INT REFERENCES articles(article_id),
+      article_id INT REFERENCES articles(article_id) ON DELETE CASCADE,
       UNIQUE (emoji_id, username, article_id)
     );
   `);
@@ -100,7 +100,7 @@ const seed = async ({
     CREATE TABLE user_article_votes (
     user_article_votes_id SERIAL PRIMARY KEY,
     username VARCHAR REFERENCES users(username),
-    article_id INT REFERENCES articles(article_id),
+    article_id INT REFERENCES articles(article_id) ON DELETE CASCADE,
     vote_count INT NOT NULL,
     UNIQUE (username, article_id)
     );  
@@ -111,7 +111,7 @@ const seed = async ({
 CREATE TABLE bookmarks (
   bookmark_id SERIAL PRIMARY KEY,
   username VARCHAR REFERENCES users(username),
-  article_id INT REFERENCES articles(article_id),
+  article_id INT REFERENCES articles(article_id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE (username, article_id)
 );
@@ -123,7 +123,7 @@ CREATE TABLE bookmarks (
       reaction_id SERIAL PRIMARY KEY,
       emoji_id INT REFERENCES emojis(emoji_id),
       username VARCHAR REFERENCES users(username),
-      comment_id INT REFERENCES comments(comment_id),
+      comment_id INT REFERENCES comments(comment_id) ON DELETE CASCADE,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       UNIQUE (emoji_id, username, comment_id)
     );
@@ -156,7 +156,7 @@ CREATE TABLE bookmarks (
     CREATE TABLE article_views (
       article_view_id SERIAL PRIMARY KEY,
       username VARCHAR REFERENCES users(username),
-      article_id INT REFERENCES articles(article_id),
+      article_id INT REFERENCES articles(article_id) ON DELETE CASCADE,
       view_count INT DEFAULT 1,
       last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       UNIQUE (username, article_id)
@@ -167,7 +167,7 @@ CREATE TABLE bookmarks (
   await db.query(`
     CREATE TABLE polls (
       poll_id SERIAL PRIMARY KEY,
-      article_id INT REFERENCES articles(article_id),
+      article_id INT REFERENCES articles(article_id) ON DELETE CASCADE,
       question TEXT NOT NULL
     );
   `);
@@ -186,7 +186,7 @@ CREATE TABLE bookmarks (
   await db.query(`
     CREATE TABLE poll_votes (
       poll_vote_id SERIAL PRIMARY KEY,
-      poll_id INT REFERENCES polls(poll_id),
+      poll_id INT REFERENCES polls(poll_id) ON DELETE CASCADE,
       username VARCHAR REFERENCES users(username),
       choice TEXT NOT NULL,
       UNIQUE (poll_id, username)
@@ -198,7 +198,7 @@ CREATE TABLE bookmarks (
     CREATE TABLE user_comment_votes (
       user_comment_votes_id SERIAL PRIMARY KEY,
       username VARCHAR REFERENCES users(username),
-      comment_id INT REFERENCES comments(comment_id),
+      comment_id INT REFERENCES comments(comment_id) ON DELETE CASCADE,
       vote_count INT NOT NULL,
       UNIQUE (username, comment_id)
     );

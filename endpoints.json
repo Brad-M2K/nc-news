@@ -99,6 +99,13 @@
         "votes": 1,
         "article_img_url": "https://www.healthyfood.com/wp-content/uploads/2018/05/seafood-substitutions-are-increasing.jpg"
       }
+    },
+    "DELETE /api/comments/:comment_id": {
+      "description": "deletes a comment by its ID",
+      "queries": [],
+      "exampleResponse": {
+        "message": "Comment deleted successfully"
+      }
     }
   }
 }

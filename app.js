@@ -8,6 +8,7 @@ const {
   getCommentsByArticleId,
   postCommentsByArticleId,
   patchArticleVotesById,
+  deleteCommentById,
 } = require("./controllers");
 const {
   psqlErrors,
@@ -45,6 +46,9 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 //* POST
 // adds a comment to an article by id
 app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
+//* DELETE
+// deletes a comment by id
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 //* USERS
 //* GET

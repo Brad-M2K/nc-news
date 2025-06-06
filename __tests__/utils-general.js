@@ -42,11 +42,11 @@ describe("checkUserExists", () => {
 });
 
 describe("ensurePresent", () => {
-  test("does nothing if value is present", () => {
+  test("does nothing if value is present", async () => {
     expect(() => ensurePresent("something")).not.toThrow();
   });
 
-  test("throws 400 with default msg if value is undefined", () => {
+  test("throws 400 with default msg if value is undefined", async () => {
     try {
       ensurePresent(undefined);
     } catch (err) {
@@ -54,7 +54,7 @@ describe("ensurePresent", () => {
     }
   });
 
-  test("throws 400 with custom msg if provided", () => {
+  test("throws 400 with custom msg if provided", async () => {
     try {
       ensurePresent(undefined, "username is required");
     } catch (err) {

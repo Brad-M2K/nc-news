@@ -11,4 +11,5 @@ module.exports = {
     .getCommentsByArticleId,
   postCommentsByArticleId: require("./comments.controller")
     .postCommentsByArticleId,
+  deleteCommentById: require("./comments.controller").deleteCommentById,
 };

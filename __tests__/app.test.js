@@ -182,6 +182,55 @@ describe("Articles Endpoints", () => {
       });
     });
   });
+
+  describe("GET - /api/articles?sort_by=column&order=asc|desc", () => {
+    test("200: Responds with articles sorted by the created_at in descending order by default", async () => {
+      const { body } = await request(app).get("/api/articles").expect(200);
+      const { articles } = body;
+
+      expect(articles).toBeSortedBy("created_at", { descending: true });
+    });
+    test("200: Responds with articles sorted by title column in ascending order)", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200);
+      const { articles } = body;
+
+      expect(articles).toBeSortedBy("title", { ascending: true });
+    });
+
+    test("200: Responds with articles sorted by votes in descending order", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=votes&order=desc")
+        .expect(200);
+      const { articles } = body;
+
+      expect(articles).toBeSortedBy("votes", { descending: true });
+    });
+
+    test("200: Responds with articles sorted by comment_count in ascending order", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=comment_count&order=asc")
+        .expect(200);
+      const { articles } = body;
+
+      expect(articles).toBeSortedBy("comment_count", { ascending: true });
+    });
+
+    test("400: Responds with an error message when given an invalid sort_by column", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=invalid_column")
+        .expect(400);
+      expect(body.msg).toBe("Bad request");
+    });
+
+    test("400: Responds with an error message when given an invalid order", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=title&order=invalid_order")
+        .expect(400);
+      expect(body.msg).toBe("Bad request");
+    });
+  });
 });
 
 describe("Comments Endpoints", () => {
@@ -301,6 +350,26 @@ describe("Comments Endpoints", () => {
         .expect(404);
 
       expect(body.msg).toBe("User not found");
+    });
+  });
+
+  describe("DELETE - /api/comments/:comment_id", () => {
+    test("204: Responds with no content when a comment is successfully deleted", async () => {
+      await request(app).delete("/api/comments/1").expect(204);
+    });
+
+    test("404: Responds with an error message when given a valid but non-existent comment_id", async () => {
+      const { body } = await request(app)
+        .delete("/api/comments/9999")
+        .expect(404);
+      expect(body.msg).toBe("Comment not found");
+    });
+
+    test("400: Responds with an error message when given an invalid comment_id", async () => {
+      const { body } = await request(app)
+        .delete("/api/comments/invalid-id")
+        .expect(400);
+      expect(body.msg).toBe("Bad request");
     });
   });
 });
