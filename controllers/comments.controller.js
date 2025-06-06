@@ -1,6 +1,5 @@
 const {
   selectCommentsByArticleId,
-  insertComment,
   insertCommentByArticleId,
 } = require("../models");
 const { checkArticleExists, checkUserExists } = require("../utils");

@@ -23,7 +23,7 @@ const seed = async ({
 }) => {
   // ! DROP tables if they exist — ensures a clean slate
   await db.query(`
-    DROP TABLE IF EXISTS poll_votes, poll_options, polls, article_views, private_messages, notifications, comment_reactions, bookmarks, user_article_votes, user_topic, emoji_article_user, emojis, comments, articles, users, topics, user_comment_votes;
+    DROP TABLE IF EXISTS poll_votes, poll_options, polls, article_views, private_messages, notifications, comment_reactions, bookmarks, user_article_votes, user_comment_votes, user_topic, emoji_article_user, comments, articles, emojis, users, topics CASCADE;
   `);
 
   // * CREATE ALL NECESSARY TABLES FOR SEEDING
@@ -442,5 +442,7 @@ CREATE TABLE bookmarks (
   );
   await db.query(userCommentVotesInsertQuery);
 };
+
+console.log("Database seeded successfully!");
 
 module.exports = seed;

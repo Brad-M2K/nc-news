@@ -6,6 +6,7 @@ module.exports = {
   getUsers: require("./users.controller").getUsers,
   getArticles: require("./articles.controller").getArticles,
   getArticleById: require("./articles.controller").getArticleById,
+  patchArticleVotesById: require("./articles.controller").patchArticleVotesById,
   getCommentsByArticleId: require("./comments.controller")
     .getCommentsByArticleId,
   postCommentsByArticleId: require("./comments.controller")

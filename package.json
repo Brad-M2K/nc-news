@@ -41,6 +41,7 @@
   "jest": {
     "setupFilesAfterEnv": [
       "jest-extended/all"
-    ]
+    ],
+    "maxWorkers": 1
   }
 }

@@ -90,6 +90,98 @@ describe("Articles Endpoints", () => {
       expect(body.msg).toBe("Bad request");
     });
   });
+
+  describe("PATCH - /api/articles/:article_id", () => {
+    describe("PATCH - /api/article/article_id", () => {
+      test("200: responds with the updated article object including correct keys and votes incremented properly", async () => {
+        const incrementVotes = { inc_votes: 5 };
+
+        const { body } = await request(app)
+          .patch("/api/articles/1")
+          .send(incrementVotes)
+          .expect(200);
+
+        const { article } = body;
+
+        expect(article).toHaveProperty("article_id", 1);
+        expect(article).toHaveProperty(
+          "title",
+          "Living in the shadow of a great man"
+        );
+        expect(article).toHaveProperty(
+          "body",
+          "I find this existence challenging"
+        );
+        expect(article).toHaveProperty("votes", 105);
+        expect(article).toHaveProperty("topic", "mitch");
+        expect(article).toHaveProperty("author", "butter_bridge");
+        expect(article).toHaveProperty("created_at");
+      });
+
+      test("200: responds with the updated article object including correct keys and votes decremented properly", async () => {
+        const decrementVotes = { inc_votes: -3 };
+
+        const { body } = await request(app)
+          .patch("/api/articles/1")
+          .send(decrementVotes)
+          .expect(200);
+
+        const { article } = body;
+
+        expect(article).toHaveProperty("article_id", 1);
+        expect(article).toHaveProperty(
+          "title",
+          "Living in the shadow of a great man"
+        );
+        expect(article).toHaveProperty(
+          "body",
+          "I find this existence challenging"
+        );
+        expect(article).toHaveProperty("votes", 97);
+        expect(article).toHaveProperty("topic", "mitch");
+        expect(article).toHaveProperty("author", "butter_bridge");
+        expect(article).toHaveProperty("created_at");
+      });
+
+      test("400: responds with an error message when given an invalid article_id", async () => {
+        const incrementVotes = { inc_votes: 5 };
+
+        const { body } = await request(app)
+          .patch("/api/articles/invalid-id")
+          .send(incrementVotes)
+          .expect(400);
+        expect(body.msg).toBe("Bad request");
+      });
+
+      test("404: responds with an error message when given a valid but non-existent article_id", async () => {
+        const incrementVotes = { inc_votes: 5 };
+
+        const { body } = await request(app)
+          .patch("/api/articles/9999")
+          .send(incrementVotes)
+          .expect(404);
+        expect(body.msg).toBe("Article not found");
+      });
+
+      test("400: responds with an error message when given an invalid request body", async () => {
+        const invalidBody = { inc_votes: "not-a-number" };
+
+        const { body } = await request(app)
+          .patch("/api/articles/1")
+          .send(invalidBody)
+          .expect(400);
+        expect(body.msg).toBe("Bad request");
+      });
+
+      test("400: responds with an error message when given an empty request body", async () => {
+        const { body } = await request(app)
+          .patch("/api/articles/1")
+          .send({})
+          .expect(400);
+        expect(body.msg).toBe("Bad request");
+      });
+    });
+  });
 });
 
 describe("Comments Endpoints", () => {

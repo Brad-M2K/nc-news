@@ -1,8 +1,5 @@
 const db = require("../db/connection");
 
-//* Selects all articles from the database, including the count of comments for each article.
-//* The articles are ordered by creation date in descending order.
-//* Leaves out the body of the articles for a brief overview.
 exports.selectArticles = async () => {
   const { rows } = await db.query(
     `
@@ -28,8 +25,21 @@ exports.selectArticleById = async (article_id) => {
     [article_id]
   );
   const article = rows[0];
-  if (!article) {
-    throw { status: 404, msg: "Article not found" };
-  }
+
   return article;
+};
+
+exports.updateArticleVotesById = async (article_id, inc_votes = 0) => {
+  const { rows } = await db.query(
+    `
+    UPDATE articles
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *;
+  `,
+    [inc_votes, article_id]
+  );
+  const updatedArticle = rows[0];
+
+  return updatedArticle;
 };

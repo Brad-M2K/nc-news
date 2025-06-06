@@ -7,6 +7,7 @@ const {
   getArticleById,
   getCommentsByArticleId,
   postCommentsByArticleId,
+  patchArticleVotesById,
 } = require("./controllers");
 const {
   psqlErrors,
@@ -22,20 +23,22 @@ app.use(express.json());
 //* ENDPOINTS API JSON
 app.get("/api", getApi);
 
-//* TOPIC ENDPOINTS
+//* TOPICS
 //* GET
 // gets list of all topics
 app.get("/api/topics", getTopics);
 
-//* ARTICLE ENDPOINTS
+//* ARTICLES
 //* GET
-// gets list of all articles with author, title, article_id, topic, created_at, votes and comment_count
-// gets list of all articles including comment count and excluding body for breif overview
+// gets list of all articles with author, title, article_id, topic, created_at, votes and comment_count - no body as this is  a list view
 app.get("/api/articles", getArticles);
 // gets a specific article by id including comment count and body
 app.get("/api/articles/:article_id", getArticleById);
+//* PATCH
+// updates the votes of an article by id
+app.patch("/api/articles/:article_id", patchArticleVotesById);
 
-//* COMMENT ENDPOINTS
+//* COMMENTS
 //* GET
 // gets all comments for an article by id
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
@@ -43,7 +46,7 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 // adds a comment to an article by id
 app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
 
-//* USER ENDPOINTS
+//* USERS
 //* GET
 // gets list of all users
 app.get("/api/users", getUsers);

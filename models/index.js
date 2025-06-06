@@ -7,4 +7,5 @@ module.exports = {
     require("./comments.model").selectCommentsByArticleId,
   insertCommentByArticleId:
     require("./comments.model").insertCommentByArticleId,
+  updateArticleVotesById: require("./articles.model").updateArticleVotesById,
 };
