@@ -59,6 +59,7 @@ describe("Articles Endpoints", () => {
         expect(article).toHaveProperty("created_at");
         expect(article).toHaveProperty("votes");
         expect(article).toHaveProperty("comment_count");
+        expect(article).toHaveProperty("article_img_url");
       });
     });
   });
@@ -77,6 +78,7 @@ describe("Articles Endpoints", () => {
       expect(article).toHaveProperty("votes");
       expect(article).toHaveProperty("body");
       expect(article).toHaveProperty("comment_count");
+      expect(article).toHaveProperty("article_img_url");
     });
 
     test("404: Responds with an error message when given a valid but non-existent article_id", async () => {
