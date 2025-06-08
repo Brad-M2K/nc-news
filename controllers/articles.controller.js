@@ -1,15 +1,19 @@
-const { sort } = require("../db/data/test-data/articles");
 const {
   selectArticles,
   selectArticleById,
   updateArticleVotesById,
 } = require("../models");
-const { checkArticleExists, ensurePresent } = require("../utils");
+const {
+  checkArticleExists,
+  ensurePresent,
+  checkTopicExists,
+} = require("../utils");
 
 exports.getArticles = async (req, res, next) => {
-  const { sort_by, order } = req.query;
+  const { sort_by, order, topic } = req.query;
   try {
-    const articles = await selectArticles(sort_by, order);
+    const existingTopic = await checkTopicExists(topic);
+    const articles = await selectArticles(sort_by, order, existingTopic);
     res.status(200).send({ articles });
   } catch (err) {
     next(err);

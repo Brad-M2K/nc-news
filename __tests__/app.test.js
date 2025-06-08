@@ -22,20 +22,21 @@ describe("GET /api", () => {
     expect(endpoints).toEqual(endpointsJson);
   });
 });
+describe("Topics Endpoints", () => {
+  describe("GET /api/topics", () => {
+    test("200: Responds with an object with teh key of topics and the value of an array of topic objects; each including slug and description", async () => {
+      const { body } = await request(app).get("/api/topics").expect(200);
+      const { topics } = body;
 
-describe("GET /api/topics", () => {
-  test("200: Responds with an object with teh key of topics and the value of an array of topic objects; each including slug and description", async () => {
-    const { body } = await request(app).get("/api/topics").expect(200);
-    const { topics } = body;
+      expect(body).toHaveProperty("topics");
+      expect(topics).toBeInstanceOf(Array);
+      expect(topics).toHaveLength(3);
 
-    expect(body).toHaveProperty("topics");
-    expect(topics).toBeInstanceOf(Array);
-    expect(topics).toHaveLength(3);
-
-    topics.forEach((topic) => {
-      expect(topic).toHaveProperty("slug");
-      expect(topic).toHaveProperty("description");
-      expect(topic).toHaveProperty("img_url");
+      topics.forEach((topic) => {
+        expect(topic).toHaveProperty("slug");
+        expect(topic).toHaveProperty("description");
+        expect(topic).toHaveProperty("img_url");
+      });
     });
   });
 });
@@ -227,6 +228,36 @@ describe("Articles Endpoints", () => {
     test("400: Responds with an error message when given an invalid order", async () => {
       const { body } = await request(app)
         .get("/api/articles?sort_by=title&order=invalid_order")
+        .expect(400);
+      expect(body.msg).toBe("Bad request");
+    });
+  });
+
+  describe("GET - /api/articles?topic=slug", () => {
+    test("200: Responds with articles filtered by the specified topic slug", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200);
+      const { articles } = body;
+
+      expect(articles).toBeInstanceOf(Array);
+      expect(articles.length).toBeGreaterThan(0);
+      expect(articles[0]).toHaveProperty("topic", "mitch");
+    });
+
+    test("200: Responds with an empty array when there are no articles for the specified topic slug", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200);
+      const { articles } = body;
+
+      expect(articles).toBeInstanceOf(Array);
+      expect(articles).toHaveLength(0);
+    });
+
+    test("400: Responds with an error message when given an invalid topic slug", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?topic=invalid_slug")
         .expect(400);
       expect(body.msg).toBe("Bad request");
     });
