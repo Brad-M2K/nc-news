@@ -6,9 +6,11 @@
   "scripts": {
     "setup-dbs": "psql -f ./db/setup-dbs.sql",
     "seed-dev": "node ./db/seeds/run-seed.js",
+    "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
     "prepare": "husky install",
     "start": "node listen.js",
+    "start-prod": "NODE_ENV=production npm run seed",
     "dev": "nodemon listen.js",
     "test-seed": "jest __tests__/seed.test.js",
     "test-app": "jest __tests__/app.test.js"
