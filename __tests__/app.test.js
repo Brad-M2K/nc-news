@@ -146,6 +146,27 @@ describe("Articles Endpoints", () => {
         expect(article).toHaveProperty("created_at");
       });
 
+      test("200: responds with the unchanged article when given an empty request body", async () => {
+        const { body } = await request(app)
+          .patch("/api/articles/1")
+          .send({})
+          .expect(200);
+        const { article } = body;
+        expect(article).toHaveProperty("article_id", 1);
+        expect(article).toHaveProperty(
+          "title",
+          "Living in the shadow of a great man"
+        );
+        expect(article).toHaveProperty(
+          "body",
+          "I find this existence challenging"
+        );
+        expect(article).toHaveProperty("votes", 100);
+        expect(article).toHaveProperty("topic", "mitch");
+        expect(article).toHaveProperty("author", "butter_bridge");
+        expect(article).toHaveProperty("created_at");
+      });
+
       test("400: responds with an error message when given an invalid article_id", async () => {
         const incrementVotes = { inc_votes: 5 };
 
@@ -172,14 +193,6 @@ describe("Articles Endpoints", () => {
         const { body } = await request(app)
           .patch("/api/articles/1")
           .send(invalidBody)
-          .expect(400);
-        expect(body.msg).toBe("Bad request");
-      });
-
-      test("400: responds with an error message when given an empty request body", async () => {
-        const { body } = await request(app)
-          .patch("/api/articles/1")
-          .send({})
           .expect(400);
         expect(body.msg).toBe("Bad request");
       });
@@ -257,11 +270,11 @@ describe("Articles Endpoints", () => {
       expect(articles).toHaveLength(0);
     });
 
-    test("400: Responds with an error message when given an invalid topic slug", async () => {
+    test("404: Responds with an error message when given a non-existent topic slug", async () => {
       const { body } = await request(app)
         .get("/api/articles?topic=invalid_slug")
-        .expect(400);
-      expect(body.msg).toBe("Bad request");
+        .expect(404);
+      expect(body.msg).toBe("Topic not found");
     });
   });
 });
@@ -368,7 +381,7 @@ describe("Comments Endpoints", () => {
         .post("/api/articles/1/comments")
         .send({ username: "butter_bridge" }) // Missing 'body'
         .expect(400);
-      expect(body.msg).toBe("Bad request");
+      expect(body.msg).toMatch(/bad request/i);
     });
 
     test("404: Responds with an error message when given a valid but non-existent username", async () => {

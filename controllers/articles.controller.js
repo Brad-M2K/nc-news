@@ -37,6 +37,11 @@ exports.patchArticleVotesById = async (req, res, next) => {
   const { inc_votes } = req.body;
 
   try {
+    if (Object.keys(req.body).length === 0) {
+      await checkArticleExists(article_id);
+      const article = await selectArticleById(article_id);
+      return res.status(200).send({ article });
+    }
     await ensurePresent(inc_votes);
     await checkArticleExists(article_id);
     const updatedArticle = await updateArticleVotesById(article_id, inc_votes);

@@ -7,7 +7,7 @@ exports.checkTopicExists = async (topic) => {
       topic,
     ]);
     if (topicExists.rows.length === 0) {
-      throw { status: 400, msg: "Bad request" };
+      throw { status: 404, msg: "Topic not found" };
     }
   }
   return topic;

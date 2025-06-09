@@ -20,6 +20,11 @@ exports.getCommentsByArticleId = async (req, res, next) => {
 exports.postCommentsByArticleId = async (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
+  if (!username || !body) {
+    return res
+      .status(400)
+      .send({ msg: "Bad request: missing required fields" });
+  }
   try {
     await checkArticleExists(article_id);
     await checkUserExists(username);
