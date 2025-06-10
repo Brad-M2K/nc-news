@@ -52,6 +52,17 @@
       ]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves a user object for the given username",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "weegembump",
+        "avatar_url": "https://www.healthyfood.com/wp-content/uploads/2018/05/seafood-substitutions-are-increasing.jpg",
+        "name": "Rachael O'Leary"
+      }
+    }
+  },
   "GET /api/articles/:article_id": {
     "description": "serves an article by its ID",
     "queries": [],

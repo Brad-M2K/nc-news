@@ -436,3 +436,26 @@ describe("GET /api/users", () => {
     });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  test("200: Responds with a user object for a valid username", async () => {
+    const { body } = await request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200);
+    expect(body).toHaveProperty("user");
+    expect(body.user).toEqual(
+      expect.objectContaining({
+        username: "butter_bridge",
+        avatar_url: expect.any(String),
+        name: expect.any(String),
+      })
+    );
+  });
+
+  test("404: Responds with an error message when given a non-existent username", async () => {
+    const { body } = await request(app)
+      .get("/api/users/not_a_user")
+      .expect(404);
+    expect(body.msg).toBe("User not found");
+  });
+});

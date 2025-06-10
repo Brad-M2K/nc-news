@@ -9,6 +9,9 @@ const apiRouter = require("./routes/api-router.js");
 
 const app = express();
 
+// Serve static files from the public directory
+app.use(express.static("public"));
+
 //? ✨ Middleware for parsing JSON
 app.use(express.json());
 
