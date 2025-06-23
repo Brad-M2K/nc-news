@@ -81,6 +81,7 @@ describe("Articles Endpoints", () => {
       expect(article).toHaveProperty("article_img_url");
     });
 
+
     test("404: Responds with an error message when given a valid but non-existent article_id", async () => {
       const { body } = await request(app).get("/api/articles/9999").expect(404);
       expect(body.msg).toBe("Article not found");

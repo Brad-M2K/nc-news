@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 
 const {
   psqlErrors,
@@ -11,6 +12,9 @@ const app = express();
 
 // Serve static files from the public directory
 app.use(express.static("public"));
+
+// CORS Policy
+app.use(cors());
 
 //? ✨ Middleware for parsing JSON
 app.use(express.json());

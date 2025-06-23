@@ -10,6 +10,7 @@ const {
 } = require("../utils");
 
 exports.getArticles = async (req, res, next) => {
+  console.log("✅ Hit getArticles controller");
   const { sort_by, order, topic } = req.query;
   try {
     const existingTopic = await checkTopicExists(topic);
