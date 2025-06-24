@@ -21,13 +21,9 @@
     </header>
     <nav class="navigation-sidebar">
         <ul>
-            <li><a href="#articles-section-marker" class="category-link"><strong>Articles</strong></a>
-                <ul id="articles-section">
-                    <li><a href="#get-articles">GET /api/articles</a></li>
-                    <li><a href="#get-articles-by-id">GET /api/articles/:article_id</a></li>
-                    <li><a href="#patch-article">PATCH /api/articles/:article_id</a></li>
-                    <li><a href="#get-comments">GET /api/articles/:article_id/comments</a></li>
-                    <li><a href="#post-comment">POST /api/articles/:article_id/comments</a></li>
+            <li><a href="#api-section-marker" class="category-link"><strong>API</strong></a>
+                <ul>
+                    <li><a href="#get-api">GET /api</a></li>
                 </ul>
             </li>
             <li><a href="#topics-section-marker" class="category-link"><strong>Topics</strong></a>
@@ -35,148 +31,176 @@
                     <li><a href="#get-topics">GET /api/topics</a></li>
                 </ul>
             </li>
+            <li><a href="#articles-section-marker" class="category-link"><strong>Articles</strong></a>
+                <ul id="articles-section">
+                    <li><a href="#get-articles">GET /api/articles</a></li>
+                    <li><a href="#get-article-by-id">GET /api/articles/:article_id</a></li>
+                    <li><a href="#patch-article-votes">PATCH /api/articles/:article_id</a></li>
+                    <li><a href="#get-article-comments">GET /api/articles/:article_id/comments</a></li>
+                    <li><a href="#post-article-comment">POST /api/articles/:article_id/comments</a></li>
+                </ul>
+            </li>
             <li><a href="#users-section-marker" class="category-link"><strong>Users</strong></a>
                 <ul id="users-section">
                     <li><a href="#get-users">GET /api/users</a></li>
+                    <li><a href="#get-user-by-username">GET /api/users/:username</a></li>
                 </ul>
             </li>
             <li><a href="#comments-section-marker" class="category-link"><strong>Comments</strong></a>
                 <ul id="comments-section">
-                    <li><a href="#get-comments">GET /api/articles/:article_id/comments</a></li>
-                    <li><a href="#post-comment">POST /api/articles/:article_id/comments</a></li>
+                    <li><a href="#delete-comment">DELETE /api/comments/:comment_id</a></li>
                 </ul>
             </li>
         </ul>
     </nav>
     <main>
-            <div id="articles-section-marker" class="section-anchor"></div>
-            <section id="get-articles">
-                <h2>GET /api/articles</h2>
-                <p>Returns an array of all the article objects</p>
-                <ul>
-                    <li>Can filter by topic: <code>?topic=coding</code></li>
-                    <li>Can sort by any valid column: <code>?sort_by= created_at</code></li>
-                    <li>Can order: <code>?order=asc</code></li>
-                </ul>
+            <div id="api-section-marker" class="section-anchor"></div>
+            <section id="get-api">
+                <h2>GET /api</h2>
+                <p>Serves up a JSON representation of all the available endpoints of the API.</p>
                 <h3>Example Response</h3>
-                <pre>
-                    [
-                    {
-                    "title": "Seafood substitutions are increasing",
-                    "topic": "cooking",
-                    "author": "weegembump",
-                    "created_at": "2018-05-30T15:59:13.341Z",
-                    "votes": 0,
-                    "comment_count": 6
-                    }
-                    ]
-                </pre>
-            </section>
-            <section id="get-articles-by-id">
-                <h2>GET /api/articles/:article_id</h2>
-                <p>Returns an article object by its ID</p>
-                <h3>Example Response</h3>
-                <pre>
-                    {
-                    "article_id": 1,
-                    "title": "Living in the shadow of a greatness",
-                    "topic": "mitch",
-                    "author": "butter_bridge",
-                    "body": "I find this existence challenging",
-                    "created_at": "2018-11-15T12:21:54.171Z",
-                    "votes": 100,
-                    "comment_count": 13
-                    }
-                </pre>
-            </section>
-            <section id="patch-article">
-                <h2>PATCH /api/articles/:article_id</h2>
-                <p>Increments or decrements the vote count of an article</p>
-                <h3>Example Request</h3>
-                <pre>
-                    {
-                    "inc_votes": 1
-                    }
-                </pre>
-                <h3>Example Response</h3>
-                <pre>
-                    {
-                    "article_id": 1,
-                    "title": "Living in the shadow of a greatness",
-                    "topic": "mitch",
-                    "author": "butter_bridge",
-                    "body": "I find this existence challenging",
-                    "created_at": "2018-11-15T12:21:54.171Z",
-                    "votes": 101,
-                    "comment_count": 13
-                    }
-                </pre>
-            </section>
-            <section id="get-comments">
-                <h2>GET /api/articles/:article_id/comments</h2>
-                <p>Returns an array of comments for a specific article</p>
-                <h3>Example Response</h3>
-                <pre>
-                    [
-                    {
-                    "comment_id": 1,
-                    "author": "butter_bridge",
-                    "body": "I love cheese",
-                    "created_at": "2018-11-15T12:21:54.171Z",
-                    "votes": 16
-                    }
-                    ]
-                </pre>
-            </section>
-            <section id="post-comment">
-                <h2>POST /api/articles/:article_id/comments</h2>
-                <p>Adds a new comment to an article</p>
-                <h3>Example Request</h3>
-                <pre>
-                    {
-                    "username": "butter_bridge",
-                    "body": "I love cheese"
-                    }
-                </pre>
-                <h3>Example Response</h3>
-                <pre>
-                    {
-                    "comment_id": 1,
-                    "author": "butter_bridge",
-                    "body": "I love cheese",
-                    "created_at": "2018-11-15T12:21:54.171Z",
-                    "votes": 0
-                    }
-                </pre>
+                <pre>{
+  "GET /api": { "description": "serves up a json representation of all the available endpoints of the api" },
+  ...
+}</pre>
             </section>
             <div id="topics-section-marker" class="section-anchor"></div>
             <section id="get-topics">
                 <h2>GET /api/topics</h2>
-                <p>Returns an array of all topics</p>
+                <p>Serves an array of all topics.</p>
                 <h3>Example Response</h3>
-                <pre>
-                    [
-                    {
-                    "slug": "coding",
-                    "description": "Code is love, code is life"
-                    }
-                    ]
-                </pre>
+                <pre>{
+  "topics": [
+    { "slug": "football", "description": "Footie!" }
+  ]
+}</pre>
+            </section>
+            <div id="articles-section-marker" class="section-anchor"></div>
+            <section id="get-articles">
+                <h2>GET /api/articles</h2>
+                <p>Serves an array of all articles.</p>
+                <ul>
+                    <li>Filter by topic: <code>?topic=cooking</code></li>
+                    <li>Sort by any valid column: <code>?sort_by=created_at</code></li>
+                    <li>Order: <code>?order=desc</code></li>
+                </ul>
+                <h3>Example Response</h3>
+                <pre>{
+  "articles": [
+    {
+      "title": "Seafood substitutions are increasing",
+      "topic": "cooking",
+      "author": "weegembump",
+      "created_at": "2018-05-30T15:59:13.341Z",
+      "votes": 0,
+      "comment_count": 6
+    }
+  ]
+}</pre>
+            </section>
+            <section id="get-article-by-id">
+                <h2>GET /api/articles/:article_id</h2>
+                <p>Serves an article by its ID.</p>
+                <h3>Example Response</h3>
+                <pre>{
+  "article": {
+    "title": "Seafood substitutions are increasing",
+    "topic": "cooking",
+    "author": "weegembump",
+    "created_at": "2018-05-30T15:59:13.341Z",
+    "votes": 0,
+    "comment_count": 28,
+    "article_img_url": "https://www.healthyfood.com/wp-content/uploads/2018/05/seafood-substitutions-are-increasing.jpg"
+  }
+}</pre>
+            </section>
+            <section id="patch-article-votes">
+                <h2>PATCH /api/articles/:article_id</h2>
+                <p>Updates the votes of a specific article by its ID.</p>
+                <h3>Example Request</h3>
+                <pre>{
+  "inc_votes": 1
+}</pre>
+                <h3>Example Response</h3>
+                <pre>{
+  "article": {
+    "title": "Seafood substitutions are increasing",
+    "topic": "cooking",
+    "author": "weegembump",
+    "created_at": "2018-05-30T15:59:13.341Z",
+    "votes": 1,
+    "article_img_url": "https://www.healthyfood.com/wp-content/uploads/2018/05/seafood-substitutions-are-increasing.jpg"
+  }
+}</pre>
+            </section>
+            <section id="get-article-comments">
+                <h2>GET /api/articles/:article_id/comments</h2>
+                <p>Serves an array of comments for a specific article by its ID.</p>
+                <h3>Example Response</h3>
+                <pre>{
+  "comments": [
+    {
+      "comment_id": 1,
+      "author": "weegembump",
+      "votes": 16,
+      "created_at": "2018-05-30T15:59:13.341Z",
+      "body": "This is a comment"
+    }
+  ]
+}</pre>
+            </section>
+            <section id="post-article-comment">
+                <h2>POST /api/articles/:article_id/comments</h2>
+                <p>Posts a new comment to a specific article by its ID.</p>
+                <h3>Example Request</h3>
+                <pre>{
+  "username": "weegembump",
+  "body": "This is a new comment"
+}</pre>
+                <h3>Example Response</h3>
+                <pre>{
+  "comment": {
+    "comment_id": 1,
+    "author": "weegembump",
+    "votes": 0,
+    "created_at": "2018-05-30T15:59:13.341Z",
+    "body": "This is a new comment"
+  }
+}</pre>
             </section>
             <div id="users-section-marker" class="section-anchor"></div>
             <section id="get-users">
                 <h2>GET /api/users</h2>
-                <p>Returns an array of all users</p>
+                <p>Serves an array of all users.</p>
                 <h3>Example Response</h3>
-                <pre>
-                    [
-                    {
-                    "username": "butter_bridge",
-                    "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=400&v=4",
-                    "name": "jonny"
-                    }
-                    ]
-                </pre>
+                <pre>{
+  "users": [
+    {
+      "username": "weegembump",
+      "avatar_url": "https://www.healthyfood.com/wp-content/uploads/2018/05/seafood-substitutions-are-increasing.jpg",
+      "name": "Rachael O'Leary"
+    }
+  ]
+}</pre>
+            </section>
+            <section id="get-user-by-username">
+                <h2>GET /api/users/:username</h2>
+                <p>Serves a user object for the given username.</p>
+                <h3>Example Response</h3>
+                <pre>{
+  "user": {
+    "username": "weegembump",
+    "avatar_url": "https://www.healthyfood.com/wp-content/uploads/2018/05/seafood-substitutions-are-increasing.jpg",
+    "name": "Rachael O'Leary"
+  }
+}</pre>
+            </section>
+            <div id="comments-section-marker" class="section-anchor"></div>
+            <section id="delete-comment">
+                <h2>DELETE /api/comments/:comment_id</h2>
+                <p>Deletes a comment by its ID.</p>
+                <h3>Example Response</h3>
+                <pre>204 No Content</pre>
             </section>
     </main>
   </div>

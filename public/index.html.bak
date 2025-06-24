@@ -1,0 +1,103 @@
+<!--
+  This is a backup of the original index.html before updating the endpoints and navigation.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  <div id="app-grid">
+    <header>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h1>NC News API</h1>
+          <p>A RESTful API for accessing news articles, topics, users, and comments.</p>
+        </div>
+        <button id="theme-toggle" aria-label="Toggle light/dark mode" style="background: none; border: none; cursor: pointer; font-size: 2rem; color: #fff; margin-left: 1.5rem;">
+          <span id="theme-icon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </header>
+    <nav class="navigation-sidebar">
+        <ul>
+            <li><a href="#articles-section-marker" class="category-link"><strong>Articles</strong></a>
+                <ul id="articles-section">
+                    <li><a href="#get-articles">GET /api/articles</a></li>
+                    <li><a href="#get-articles-by-id">GET /api/articles/:article_id</a></li>
+                    <li><a href="#patch-article">PATCH /api/articles/:article_id</a></li>
+                    <li><a href="#get-comments">GET /api/articles/:article_id/comments</a></li>
+                    <li><a href="#post-comment">POST /api/articles/:article_id/comments</a></li>
+                </ul>
+            </li>
+            <li><a href="#topics-section-marker" class="category-link"><strong>Topics</strong></a>
+                <ul id="topics-section">
+                    <li><a href="#get-topics">GET /api/topics</a></li>
+                </ul>
+            </li>
+            <li><a href="#users-section-marker" class="category-link"><strong>Users</strong></a>
+                <ul id="users-section">
+                    <li><a href="#get-users">GET /api/users</a></li>
+                </ul>
+            </li>
+            <li><a href="#comments-section-marker" class="category-link"><strong>Comments</strong></a>
+                <ul id="comments-section">
+                    <li><a href="#get-comments">GET /api/articles/:article_id/comments</a></li>
+                    <li><a href="#post-comment">POST /api/articles/:article_id/comments</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <main>
+            <div id="articles-section-marker" class="section-anchor"></div>
+            <section id="get-articles">
+                <h2>GET /api/articles</h2>
+                <p>Returns an array of all the article objects</p>
+                <ul>
+                    <li>Can filter by topic: <code>?topic=coding</code></li>
+                    <li>Can sort by any valid column: <code>?sort_by= created_at</code></li>
+                    <li>Can order: <code>?order=asc</code></li>
+                </ul>
+                <h3>Example Response</h3>
+                <pre>
+                    [
+                    {
+                    "title": "Seafood substitutions are increasing",
+                    "topic": "cooking",
+                    "author": "weegembump",
+                    "created_at": "2018-05-30T15:59:13.341Z",
+                    "votes": 0,
+                    "comment_count": 6
+                    }
+                    ]
+                </pre>
+            </section>
+            <section id="get-articles-by-id">
+                <h2>GET /api/articles/:article_id</h2>
+                <p>Returns an article object by its ID</p>
+                <h3>Example Response</h3>
+                <pre>
+                    {
+                    "article_id": 1,
+                    "title": "Living in the shadow of a greatness",
+                    "topic": "mitch",
+                    "author": "butter_bridge",
+                    "body": "I find this existence challenging",
+                    "created_at": "2018-11-15T12:21:54.171Z",
+                    "votes": 100,
+                    "comment_count": 13
+                    }
+                </pre>
+            </section>
+            <section id="patch-article">
+                <h2>PATCH /api/articles/:article_id</h2>
+                <p>Increments or decrements the vote count of an article</p>
+                <h3>Example Request</h3>
+                <pre>
+                    {
+                    "inc_votes": 1
+                    }
+                </pre>
